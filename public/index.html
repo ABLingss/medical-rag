@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>知医 · 医学学习工作台</title><meta name="description" content="从可溯源知识到真正记住，医学术语、机制与自测的学习工作台。"><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/styles.css"><script type="module" src="/app.js"></script></head>
+<body>
+<aside class="sidebar">
+  <a class="brand" href="/" aria-label="知医首页"><span class="brand-icon">✚</span><span>知医<small>MEDICAL LEARNING LAB</small></span></a>
+  <div class="nav-label">你的学习空间</div>
+  <nav aria-label="主要导航">
+    <button class="nav active" data-view="learn"><span>◈</span> 学习工作台</button>
+    <button class="nav" data-view="library"><span>▤</span> 知识库<span id="doc-count" class="count">4</span></button>
+    <button class="nav" data-view="saved"><span>▧</span> 我的卡片</button>
+    <button class="nav" data-view="experiments"><span>⚗</span> 实验与评估</button>
+    <button class="nav" data-view="prompts"><span>⌘</span> 提示词库</button>
+  </nav>
+  <div class="sidebar-bottom"><div class="mini-label">循证学习，从来源开始</div><p>让抽象的机制变清晰<br>让记忆有迹可循。</p><button class="nav" data-view="settings"><span>⚙</span> 连接与设置</button><div class="sidebar-foot">课程实践项目 · 2026</div></div>
+</aside>
+<main>
+  <header><div class="breadcrumb">学习空间 <span>/</span> <b id="page-name">学习工作台</b></div><span id="connection" class="status">正在连接</span></header>
+  <section id="learn" class="view">
+    <div class="eyebrow">UNDERSTAND. REMEMBER. APPLY.</div>
+    <div class="hero"><div><h1>医学知识，<em>慢慢变清晰。</em></h1><p>从一个术语开始，连接机制、记忆与理解。</p></div><div class="hero-mark" aria-hidden="true">✳</div></div>
+    <div class="workspace">
+      <div class="study-main">
+        <form id="generate-form" class="query-panel">
+          <div class="panel-label"><span class="step">01</span> 今天想学什么？<span class="small muted">从术语到机制</span></div>
+          <textarea id="query" aria-label="医学术语或学习问题" maxlength="500" placeholder="输入医学术语或问题，例如：心力衰竭的机制是什么？" required>心力衰竭</textarea>
+          <div class="suggestions"><span>试试看</span><button type="button" data-topic="心力衰竭">心力衰竭 ↗</button><button type="button" data-topic="肾小球滤过率">肾小球滤过率 ↗</button><button type="button" data-topic="炎症因子">炎症因子 ↗</button></div>
+          <div class="query-bottom"><label class="select-label">生成方式 <select id="mode"><option value="ai">AI · 来源约束生成</option><option value="demo">离线 · 预制教学示例</option></select></label><button class="primary" id="generate" type="submit">生成学习内容 <span>↗</span></button></div>
+        </form>
+        <div id="loading" class="loading hidden" role="status"><span class="spinner"></span><div>正在连接知识与理解…<small>检索资料 → 整理机制 → 生成卡片与自测</small></div></div>
+        <div id="result" class="hidden">
+          <div class="result-heading"><div><span class="eyebrow">YOUR LEARNING NOTE</span><h2 id="result-title"></h2></div><div class="actions"><button id="save-lesson" class="secondary">＋ 收藏</button><button id="export-lesson" class="secondary">导出笔记 ↓</button></div></div>
+          <div id="result-meta" class="small muted"></div>
+          <div class="tabs" role="tablist"><button class="tab active" data-tab="overview" role="tab" aria-selected="true">理解与机制</button><button class="tab" data-tab="cards" role="tab" aria-selected="false">记忆卡片</button><button class="tab" data-tab="quiz" role="tab" aria-selected="false">自测练习</button></div>
+          <div id="overview" class="tab-panel"></div><div id="cards" class="tab-panel hidden"></div><div id="quiz" class="tab-panel hidden"></div>
+          <div id="risks" class="risk-panel"></div>
+        </div>
+        <div id="welcome" class="welcome"><div class="welcome-symbol">✧</div><h2>不止记住名词，更要理解联系。</h2><p>一份学习内容，串起四个复习环节。</p><div class="feature-grid"><div><span>01 / UNDERSTAND</span><b>通俗解释</b><p>把抽象概念拆成清晰语言</p></div><div><span>02 / CONNECT</span><b>机制梳理</b><p>沿着因果步骤理解知识</p></div><div><span>03 / REMEMBER</span><b>记忆卡片</b><p>翻面回忆，主动提取</p></div><div><span>04 / PRACTICE</span><b>自测反馈</b><p>用问题发现遗漏的细节</p></div></div></div>
+      </div>
+      <aside class="source-column"><div class="source-head"><span class="source-icon">▤</span><h3>知识有出处</h3></div><p class="source-intro">每一次理解，都能回到原始资料。</p><div class="source-stats"><div><b id="stat-docs">—</b><span>知识资料</span></div><div><b id="stat-chunks">—</b><span>可检索片段</span></div></div><div class="divider"></div><div class="panel-label small">本次参考资料 <span id="hit-count" class="count">0</span></div><div id="sources"><div class="source-empty">生成学习内容后，<br>在这里查看引用片段与来源。</div></div><div class="source-note"><b>学习边界</b><p>用于课程复习，不提供个人诊断或用药建议。AI 内容与记忆口诀需对照本校教材核查。</p></div></aside>
+    </div>
+  </section>
+  <section id="library" class="view hidden"><div class="eyebrow">KNOWLEDGE LIBRARY</div><h1>把资料变成<em>知识底座。</em></h1><p class="subtitle">内置基础主题，也可以导入自己的教材章节。</p><div class="two-column"><div><form id="search-form" class="search-row"><input id="search-query" placeholder="检索术语，查看真正命中的片段" aria-label="检索术语" required><button class="primary">检索</button></form><div id="search-results"></div><div id="document-list"></div></div><form id="upload-form" class="surface"><h3>导入学习资料</h3><p class="muted small">PDF / Markdown / UTF-8 文本 · 最大10MB<br>扫描版PDF需先OCR，建议按章节导入。</p><label>资料名称<input id="upload-title" placeholder="例如：生理学 第八章（教材版本）" maxlength="200"></label><label>来源链接（选填）<input id="upload-url" type="url" placeholder="用于引用，不自动抓取网页"></label><label class="file-label">选择文件<input id="upload-file" type="file" accept=".pdf,.txt,.md" required></label><button class="primary" id="upload-button">导入知识库 ＋</button><p class="small muted">资料保存在服务器本地。800字符分段、150字符重叠，保留PDF页码；页码指PDF物理页，摘要页码为内部编号。</p></form></div></section>
+  <section id="saved" class="view hidden"><div class="eyebrow">PERSONAL COLLECTION</div><h1>反复回忆，<em>才会记住。</em></h1><p class="subtitle">收藏保存在当前浏览器。重要笔记记得导出。</p><div id="saved-list"></div></section>
+  <section id="experiments" class="view hidden"><div class="eyebrow">PROMPT EXPERIMENTS</div><h1>好的结果，<em>经得起比较。</em></h1><p class="subtitle">真实调用、完整记录。结构合格不代表事实正确，评价需要人工核查。</p><form id="experiment-form" class="surface"><label>实验问题<textarea id="experiment-query" maxlength="500" required>心力衰竭的概念与机制是什么？</textarea></label><div id="risk-cases" class="case-row"></div><div class="query-bottom"><select id="experiment-kind" aria-label="实验类型"><option value="prompt">粗放 / 精细提示对照 · 2次调用</option><option value="repeat">同质化对照 · 两组各3次，共6次调用</option><option value="tools">横向工具对比 · 2次调用</option></select><button class="primary" id="run-experiment">运行真实实验 ↗</button></div><p class="small muted">两组对照使用相同资料、输出结构与生成参数，只改变系统提示。实验会消耗API额度。风险测试允许无命中资料，观察模型是否拒绝编造。</p></form><div class="section-row"><h2>实验记录</h2><button id="export-experiments" class="secondary">导出全部 JSON ↓</button></div><div id="experiment-list"></div></section>
+  <section id="prompts" class="view hidden"><div class="eyebrow">PROMPT COLLECTION</div><h1>给 AI 的<em>学习方法。</em></h1><p class="subtitle">把内容结构、证据与能力边界写进每个模块的约束。</p><div id="prompt-list"></div></section>
+  <section id="settings" class="view hidden"><div class="eyebrow">CONNECTION</div><h1>连接你的<em>学习助手。</em></h1><div class="surface settings-panel"><h3>AI 服务状态</h3><p id="settings-status"></p><p class="muted">模型密钥由服务器保管，不能在网页读取或修改。接入DeepSeek Flash，在服务器的 .env 中配置即可。</p><form id="token-form"><label>访问口令<input id="access-token" type="password" autocomplete="off" placeholder="服务器启动时显示的访问口令"></label><p class="small muted">导入资料和调用AI需要口令。本机浏览器自动连接；其他设备请输入服务器口令。口令只保留在当前页面会话内。</p><button class="primary">保存连接</button></form></div></section>
+  <footer>知医 · 医学学习工作台 <span>每一份知识，都值得认真核对。</span></footer>
+</main><div id="toast" class="toast hidden" role="alert"></div>
+</body></html>

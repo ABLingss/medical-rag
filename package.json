@@ -1,0 +1,7 @@
+{
+  "name": "medical-rag", "version": "1.0.0", "private": true, "type": "module",
+  "description": "医学生的可溯源学习卡片与 RAG 实验工作台",
+  "engines": { "node": ">=22.13.0" },
+  "scripts": { "start": "node --env-file-if-exists=.env server.js", "dev": "node --env-file-if-exists=.env --watch server.js", "test": "node --test", "check": "node --check server.js && node --check public/app.js" },
+  "dependencies": { "pdfjs-dist": "^5.4.624" }
+}

@@ -1,0 +1,13 @@
+import { readFile, mkdir, writeFile } from 'node:fs/promises';
+const env = Object.fromEntries((await readFile(new URL('../.env', import.meta.url), 'utf8')).split('\n').filter(l => l.includes('=')).map(l => { const i = l.indexOf('='); return [l.slice(0, i), l.slice(i + 1)]; }));
+const endpoint = `http://127.0.0.1:${env.PORT || 3000}`;
+const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${env.ADMIN_TOKEN}` };
+const health = await fetch(endpoint + '/api/status').then(r => r.json());
+if (!health.aiEnabled || health.model !== 'deepseek-flash') throw new Error('Flash没有配置');
+const res = await fetch(endpoint + '/api/generate', { method: 'POST', headers, body: JSON.stringify({ query: '心力衰竭', mode: 'ai' }) });
+const output = await res.json();
+if (!res.ok) throw new Error(output.error);
+if (!output.result.cards.length || !output.result.quiz.length) throw new Error('AI没有生成卡片或自测题');
+await mkdir(new URL('../test-results/', import.meta.url), { recursive: true });
+await writeFile(new URL('../test-results/live-flash.json', import.meta.url), JSON.stringify(output, null, 2));
+console.log(JSON.stringify({ verified: true, model: output.model, cards: output.result.cards.length, quiz: output.result.quiz.length, durationMs: output.durationMs, sources: output.result.sourceIds }));
