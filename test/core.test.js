@@ -32,12 +32,15 @@ test('提示对照保持用户问题、资料与结构完全相同', () => {
   const hits = retrieve('炎症因子', seedDocuments), coarse = messages('炎症因子', hits, 'coarse'), precise = messages('炎症因子', hits);
   assert.deepEqual(coarse[1], precise[1]); assert.notEqual(coarse[0].content, precise[0].content);
 });
-test('AI错误不泄露服务内容与密钥，DeepSeek显式禁用思考', async () => {
+test('AI错误保留上游响应与底层原因并遮蔽密钥，DeepSeek显式禁用思考', async () => {
   const config = { key: 'SECRET', base: 'https://api.deepseek.com', model: 'deepseek-flash' };
   await assert.rejects(callAI('心力衰竭', [], config, 'precise', async (_url, options) => {
-    assert.equal(JSON.parse(options.body).thinking.type, 'disabled'); return { ok: false, status: 401 };
-  }), /401/);
+    assert.equal(JSON.parse(options.body).thinking.type, 'disabled'); return new Response('invalid API key SECRET', { status: 401 });
+  }), e => e.status === 502 && e.message.includes('401') && e.message.includes('invalid API key') && !e.message.includes('SECRET'));
   await assert.rejects(callAI('x', [], config, 'precise', async () => { throw new Error('SECRET'); }), e => !e.message.includes('SECRET'));
+  const failure = new TypeError('fetch failed', { cause: Object.assign(new Error('connect timed out'), { code: 'UND_ERR_CONNECT_TIMEOUT' }) });
+  await assert.rejects(callAI('x', [], config, 'precise', async () => { throw failure; }), e => e.cause === failure && e.message.includes('fetch failed') && e.message.includes('UND_ERR_CONNECT_TIMEOUT') && e.message.includes('connect timed out'));
+  await assert.rejects(callAI('x', [], config, 'precise', async () => ({ ok: true, json: async () => { throw new DOMException('body timed out', 'TimeoutError'); } })), e => e.status === 502 && e.message.includes('TimeoutError') && e.message.includes('body timed out'));
 });
 test('临床边界与相似度', () => {
   assert.ok(isClinical('患者心衰吃什么药？')); assert.ok(!isClinical('心力衰竭是什么？'));
